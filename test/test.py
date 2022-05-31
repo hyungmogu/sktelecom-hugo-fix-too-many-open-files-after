@@ -4,20 +4,20 @@ import os, os.path
 import subprocess, signal
 import unittest
 
-class TestHugo(unittest.TestCase):
+class TestHugoStart(unittest.TestCase):
   def setUp(self) -> None:
     dirPath = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     executable = "start.sh"
     timeout = 10
 
-    # This solution because microsoft server hangs when running test: https://stackoverflow.com/questions/48763362/python-subprocess-kill-with-timeout#answer-48763628
-    # Resource warning expected
-
+    # Because windows use sh command to compile bash script: https://stackoverflow.com/questions/26522789/how-to-run-sh-on-windows-command-prompt#answer-30744390
     if os.name == "nt":
       self.proc = subprocess.Popen(["sh", os.path.join(dirPath, executable)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     else:
       self.proc = subprocess.Popen(["bash", os.path.join(dirPath, executable)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+    # This solution because microsoft server hangs when running test: https://stackoverflow.com/questions/48763362/python-subprocess-kill-with-timeout#answer-48763628
+    # Resource warning expected
     for _ in range(timeout):
       if self.proc.poll() is not None:
         break
